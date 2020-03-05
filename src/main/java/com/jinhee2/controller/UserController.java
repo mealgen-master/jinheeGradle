@@ -1,35 +1,73 @@
 package com.jinhee2.controller;
 
-import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jinhee2.model.User;
-import com.jinhee2.repository.UserJpaRepository;
+import com.jinhee2.model.UserRole;
+import com.jinhee2.model.UserRole.Role;
+import com.jinhee2.model.Users;
 import com.jinhee2.service.UserService;
 
 @RestController
 public class UserController {
-
-	@Resource(name="userJpaRepository")
-	private UserJpaRepository userJpaRepository;
 	
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	@GetMapping("/selectUser")
-	public User selectUser(@RequestParam(name="id") int id, @RequestParam(name="name") String name) {
-		User user = new User();
+	private List<Users> selectUser() {
+		return userService.findAll();
+	}
+	
+	@GetMapping("/insertUser")
+	private String insertUser(
+			@RequestParam(name="name") String name,
+			@RequestParam(name="phonenumber") String phonenumber,
+			@RequestParam(name="address") String address,
+			@RequestParam(name="password") String password,
+			@RequestParam(name="role") Role role
+	) {
+		Users user = new Users();
+		UserRole userRoles = new UserRole();
 		
-		try {
-			user = userService.selectUser(name);
-			return user;
-		} catch (NumberFormatException e) {
-			throw new NumberFormatException("에러에");
-		}
+		user.setName(name);
+		user.setPhonenumber(phonenumber);
+		user.setAddress(address);
+		user.setPassword(passwordEncoder.encode(password));
+		userRoles.setRolename(role);
+		user.setUserRoles(Arrays.asList(userRoles));
 		
+		userService.insertUser(user);
+		return name + " 저장완료";
+	}
+	
+	@GetMapping("updateUser")
+	private String updateUser(
+			@RequestParam(name="id") Integer id,
+			@RequestParam(name="name") String name,
+			@RequestParam(name="phonenumber") String phonenumber,
+			@RequestParam(name="address") String address,
+			@RequestParam(name="password") String password,
+			@RequestParam(name="role") Role role
+	) {
+		userService.updateUser(id, name, address, phonenumber, passwordEncoder.encode(password), role);
+		return name + " 수정완료";
+	}
+	
+	@GetMapping("deleteUser")
+	private String deleteUser(
+		@RequestParam(name="id") Integer id
+	) {
+		userService.deleteUser(id);
+		return id + " 번째 삭제완료";
 	}
 }
