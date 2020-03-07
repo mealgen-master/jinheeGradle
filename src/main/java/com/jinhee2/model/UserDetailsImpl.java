@@ -15,6 +15,7 @@ public class UserDetailsImpl extends User {
 		super(users.getName(), users.getPassword(), authorities(users.getUserRoles()));
 	}
 	
+	// 인증요청에 대한 권한
 	private static Collection<? extends GrantedAuthority> authorities(List<UserRole> roles) {
 		List<GrantedAuthority> authorities = new ArrayList<>(); 
 		

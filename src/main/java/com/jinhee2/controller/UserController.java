@@ -47,10 +47,10 @@ public class UserController {
 		user.setUserRoles(Arrays.asList(userRoles));
 		
 		userService.insertUser(user);
-		return name + " 저장완료";
+		return "사용자 " + name + " 저장완료";
 	}
 	
-	@GetMapping("updateUser")
+	@GetMapping("/updateUser")
 	private String updateUser(
 			@RequestParam(name="id") Integer id,
 			@RequestParam(name="name") String name,

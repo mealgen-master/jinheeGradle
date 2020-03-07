@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +28,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name="user")
-public class Users {
+public class Users implements UserDetails {
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,5 +53,35 @@ public class Users {
 	
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.userRoles.stream().map( role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.name;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true; // 만료
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true; // 막지않는다.
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true; // 인증만료기간
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true; // 사용한다.
 	}
 }

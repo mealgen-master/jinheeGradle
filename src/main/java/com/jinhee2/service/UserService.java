@@ -1,5 +1,6 @@
 package com.jinhee2.service;
 
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,9 +8,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jinhee2.model.OauthClientDetails;
 import com.jinhee2.model.UserRole;
 import com.jinhee2.model.UserRole.Role;
 import com.jinhee2.model.Users;
+import com.jinhee2.repository.ClientJpaRepository;
 import com.jinhee2.repository.UserJpaRepository;
 
 @Service
@@ -17,8 +20,15 @@ public class UserService {
 	@Autowired
 	private UserJpaRepository userJpaRepository;
 	
+	@Autowired
+	private ClientJpaRepository clientJpaRepository;
+	
 	public List<Users> findAll() {
 		return userJpaRepository.findAll();
+	}
+
+	public void insertClientDetails(OauthClientDetails oauthClientDetails) {
+		clientJpaRepository.save(oauthClientDetails);
 	}
 	
 	public void insertUser(Users user) {

@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.jinhee2.model.Users;
 
 public interface UserJpaRepository extends JpaRepository<Users, Integer> {
-	List<Users> findAll();
 	Users findByName(String name);
 	Users getOne(Integer id);
 //	List<User> findAll(Integer id, String name);

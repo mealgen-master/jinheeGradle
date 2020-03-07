@@ -1,11 +1,24 @@
+# 클래스패스 spring-jpa-database ...
 server:
    port: 8080
+   # 비대칭키관련 설정
+   #ssl:
+      #enabled: true
+      # key 이름
+      #key-alias: jinhee
+      # key store 위치
+      #key-store: jinhee.jks
+      #key-store-type: jks
+      # key store 암호
+      #key-store-password: 1q2w3e4r
+      # key file 암호
+      #key-password: 1q2w3e4r
 spring:
    datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/sys?serverTimezone=UTC&characterEncoding=UTF-8
       username: root
-      password: "kjsh22887!"
+      password: "`q1w2e3r4t"
    jpa:
       database: mysql
       database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -14,3 +27,7 @@ spring:
       hibernate:
          format_sql: true
          ddl-auto: create
+security:
+   oauth2:
+      jwt:
+         signkey: "장하다강진희"

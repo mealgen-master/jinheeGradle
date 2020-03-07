@@ -14,7 +14,7 @@ import com.jinhee2.repository.UserJpaRepository;
 public class UserDetailsServiceImpl implements UserDetailsService{
 	@Autowired
 	private UserJpaRepository userJpaRepository;
-
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Users users = userJpaRepository.findByName(username);
@@ -25,6 +25,7 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		
 		// 찾은 레코드를 기준으로 User 설정
 		UserDetailsImpl userDetailImpl = new UserDetailsImpl(users);
+		
 		return userDetailImpl;
 	}
 }
