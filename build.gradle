@@ -68,5 +68,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-security:2.1.2.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-oauth2:2.1.2.RELEASE'
 	compile group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.2.2.RELEASE'	
+	
+	// jenkins war spring boot 내장톰캣 사용 X -> 외부 tomcat 사용 설정
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 }
 
