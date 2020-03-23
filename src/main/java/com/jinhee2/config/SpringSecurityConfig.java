@@ -3,8 +3,10 @@ package com.jinhee2.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,6 +17,7 @@ import com.jinhee2.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //	@Autowired
 //	private PasswordEncoder passwordEncoder;
@@ -56,12 +59,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		// httpBasic으로 통신하며, 요청이 들어오는 요청에 대한 설정
 		http.authorizeRequests()
-			.antMatchers("/oauth/**", "/oauth/token", "/oauth2/callback**").permitAll()
+			.antMatchers(HttpMethod.GET, "/").permitAll();
+
+//			.antMatchers("/oauth/**", "/oauth/token", "/oauth2/callback**").permitAll()
 //			.antMatchers("/selectUser").hasRole("{\"id\":1,\"rolename\":\"USER\"}")
-			.antMatchers("/selectUser").authenticated()
-			.anyRequest().permitAll()
-	        .and()
-	        .httpBasic();
+//			.antMatchers("/selectUser").authenticated()
+//			.anyRequest().permitAll()
+//	        .and()
+//	        .httpBasic();
 
 	}
 }

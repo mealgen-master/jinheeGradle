@@ -48,6 +48,7 @@ public class Users implements UserDetails {
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id")
+	// More than one attribute configured for field 'userRoles'
 	@ElementCollection(fetch = FetchType.EAGER)
 	public List<UserRole> userRoles = new ArrayList<>();
 	

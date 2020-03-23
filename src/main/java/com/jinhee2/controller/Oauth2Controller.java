@@ -26,7 +26,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/oauth2")
+@RequestMapping(path="/api/oauth2")
+//@RequestMapping(value="/api/oauth2", produces= MediaTypes.HAL_JSON_VALUE)
 public class Oauth2Controller {
 	@Autowired
 	private Gson gson;

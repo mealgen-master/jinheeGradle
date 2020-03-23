@@ -1,5 +1,6 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.5.RELEASE'
+//	id 'org.springframework.boot' version '2.2.5.RELEASE'
+	id 'org.springframework.boot' version '2.2.2.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
 	id 'war'
@@ -76,5 +77,14 @@ dependencies {
 	compile 'io.springfox:springfox-swagger2:2.9.2'
 	compile 'io.springfox:springfox-swagger-ui:2.9.2'
 	compile 'io.springfox:springfox-bean-validators:2.9.2'
+
+	// hateoas
+	compile 'org.springframework.boot:spring-boot-starter-hateoas'
+	// hateoas 모듈충돌관련 의존성
+	compile group: 'org.springframework.plugin', name: 'spring-plugin-core', version: '1.2.0.RELEASE'
+
+	// DTO
+	compile group: 'org.modelmapper', name: 'modelmapper', version: '0.7.5'
+
 }
 

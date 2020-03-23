@@ -3,11 +3,12 @@ package com.jinhee2.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import com.jinhee2.dto.UsersDTO;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.jinhee2.model.UserRole;
 import com.jinhee2.model.UserRole.Role;
@@ -15,6 +16,7 @@ import com.jinhee2.model.Users;
 import com.jinhee2.service.UserService;
 
 @RestController
+@RequestMapping(path="/api/user")
 public class UserController {
 	
 	@Autowired
@@ -24,8 +26,21 @@ public class UserController {
 	PasswordEncoder passwordEncoder;
 	
 	@GetMapping("/selectUser")
-	private List<Users> selectUser() {
+	private List<Users> selectUsers() {
+
 		return userService.findAll();
+	}
+
+//	@GetMapping("/selectUserDTO/{id}")
+//	private ResponseEntity<UsersDTO.Response> selectUser(@ApiParam(required = true, example = "1") @PathVariable final Integer id) {
+//		UsersDTO.Response userDtoResponse = userService.findUser(id);
+//		return ResponseEntity.ok(userDtoResponse);
+//	}
+
+	@GetMapping("/api/selectUserDTO/{id}")
+	private ResponseEntity<UsersDTO.Response> selectUserDTO(@ApiParam(required = true , example = "1") @PathVariable final  Integer id) {
+		UsersDTO.Response userDtoResponse = userService.findUser(id);
+		return ResponseEntity.ok(userDtoResponse);
 	}
 	
 	@GetMapping("/insertUser")

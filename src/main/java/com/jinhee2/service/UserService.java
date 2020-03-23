@@ -4,7 +4,10 @@ package com.jinhee2.service;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
+import com.jinhee2.dto.UsersDTO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +18,33 @@ import com.jinhee2.model.Users;
 import com.jinhee2.repository.ClientJpaRepository;
 import com.jinhee2.repository.UserJpaRepository;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 @Service
 public class UserService {
+
 	@Autowired
 	private UserJpaRepository userJpaRepository;
 	
 	@Autowired
 	private ClientJpaRepository clientJpaRepository;
-	
+
+	// modelMapper 객체를 사용
+	@Autowired
+	private ModelMapper modelMapper;
+
+	private UsersDTO.Response toResponse(Users users) {
+		return modelMapper.map(users, UsersDTO.Response.class);
+	}
+
 	public List<Users> findAll() {
 		return userJpaRepository.findAll();
 	}
+
+	public UsersDTO.Response findUser(final Integer id){
+		return toResponse(userJpaRepository.findById(id).get());
+	}
+
 
 	public void insertClientDetails(OauthClientDetails oauthClientDetails) {
 		clientJpaRepository.save(oauthClientDetails);

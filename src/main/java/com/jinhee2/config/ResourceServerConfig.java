@@ -13,9 +13,26 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
-//@Configuration
-//@EnableResourceServer
+@Configuration
+@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+
+	private static final String[] AUTH_WHITELIST = {
+		// oauth2
+		"/oauth/**",
+		"/api/oauth2/**",
+		"/api/user/insertUser**",
+
+		// swagger2
+		"/v2/api-docs",
+		"/swagger-resources",
+		"/swagger-resources/**",
+		"/configuration/ui",
+		"/configuration/security",
+		"/swagger-ui.html",
+		"/webjars/**"
+	};
+
 	@Autowired
 	DataSource dataSource;
 	
@@ -60,8 +77,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		// 모든 인증요청 중에
 		http.authorizeRequests()
-			.antMatchers("/oauth/**", "/oauth2/**", "/insertUser").permitAll()
-			.antMatchers("/selectUser").access("#oauth2.hasScope('write')")
-			.antMatchers("/updateUser**").access("#oauth2.hasScope('read')");
+			.antMatchers(AUTH_WHITELIST).permitAll()
+			.antMatchers("/selectUser").access("#oauth2.hasScope('read')")
+			.antMatchers("/updateUser**").access("#oauth2.hasScope('write')")
+			.anyRequest().authenticated();
 	}
 }
