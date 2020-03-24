@@ -25,7 +25,7 @@ public class UserRole {
 	private Integer id;
 
 	public enum Role {
-		USER, ADMIN;
+		USER, ADMIN, PARENT, TEACHER;
 	}
 
 	@Column(name="role_name")

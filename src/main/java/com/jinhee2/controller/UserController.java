@@ -15,6 +15,8 @@ import com.jinhee2.model.UserRole.Role;
 import com.jinhee2.model.Users;
 import com.jinhee2.service.UserService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path="/api/user")
 public class UserController {
@@ -31,39 +33,39 @@ public class UserController {
 		return userService.findAll();
 	}
 
-//	@GetMapping("/selectUserDTO/{id}")
-//	private ResponseEntity<UsersDTO.Response> selectUser(@ApiParam(required = true, example = "1") @PathVariable final Integer id) {
-//		UsersDTO.Response userDtoResponse = userService.findUser(id);
-//		return ResponseEntity.ok(userDtoResponse);
-//	}
-
 	@GetMapping("/api/selectUserDTO/{id}")
 	private ResponseEntity<UsersDTO.Response> selectUserDTO(@ApiParam(required = true , example = "1") @PathVariable final  Integer id) {
 		UsersDTO.Response userDtoResponse = userService.findUser(id);
 		return ResponseEntity.ok(userDtoResponse);
 	}
-	
-	@GetMapping("/insertUser")
-	private String insertUser(
-			@RequestParam(name="name") String name,
-			@RequestParam(name="phonenumber") String phonenumber,
-			@RequestParam(name="address") String address,
-			@RequestParam(name="password") String password,
-			@RequestParam(name="role") Role role
-	) {
-		Users user = new Users();
-		UserRole userRoles = new UserRole();
-		
-		user.setName(name);
-		user.setPhonenumber(phonenumber);
-		user.setAddress(address);
-		user.setPassword(passwordEncoder.encode(password));
-		userRoles.setRolename(role);
-		user.setUserRoles(Arrays.asList(userRoles));
-		
-		userService.insertUser(user);
-		return "사용자 " + name + " 저장완료";
+
+	@PostMapping("/api/insertUserDTO")
+	private ResponseEntity<UsersDTO.Response> insertUserDTO(@RequestBody @Valid UsersDTO.Create dto) throws Exception {
+		UsersDTO.Response userDtoResponse = userService.insertUser(dto);
+		return ResponseEntity.ok(userDtoResponse);
 	}
+	
+//	@GetMapping("/insertUser")
+//	private String insertUser(
+//			@RequestParam(name="name") String name,
+//			@RequestParam(name="phonenumber") String phonenumber,
+//			@RequestParam(name="address") String address,
+//			@RequestParam(name="password") String password,
+//			@RequestParam(name="role") Role role
+//	) {
+//		Users user = new Users();
+//		UserRole userRoles = new UserRole();
+//
+//		user.setName(name);
+//		user.setPhonenumber(phonenumber);
+//		user.setAddress(address);
+//		user.setPassword(passwordEncoder.encode(password));
+//		userRoles.setRolename(role);
+//		user.setUserRoles(Arrays.asList(userRoles));
+//
+//		userService.insertUser(user);
+//		return "사용자 " + name + " 저장완료";
+//	}
 	
 	@GetMapping("/updateUser")
 	private String updateUser(
