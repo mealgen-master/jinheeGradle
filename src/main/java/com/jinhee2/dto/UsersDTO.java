@@ -49,4 +49,20 @@ public class UsersDTO {
         @NotNull
         private UserRole.Role rolename;
     }
+
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class Update {
+        @NotEmpty
+        private String name;
+
+        @NotNull
+        private String password;
+
+        @NotEmpty
+        private UserRole.Role rolename;
+    }
 }

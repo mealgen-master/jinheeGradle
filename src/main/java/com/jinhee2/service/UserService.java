@@ -6,6 +6,7 @@ import java.util.*;
 import com.jinhee2.dto.UsersDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,19 +34,31 @@ public class UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	/*
+	private Users validate(final String name) throws Exception {
+		1.
+		Users existUser = userJpaRepository.findByName(name)
+
+		2.
+		Users existUser = userJpaRepository.findById(id)
+				.orElseThrow(() -> new AccountNotFoundException(id.toString()));
+
+		if(!existUser.getName().equals(name)) {
+			throw new Exception("Access is denied :: 이미 존재하는 이름입니다. ?");
+		}
+		return existUser;
+	}
+	*/
+
 	private UsersDTO.Response toResponse(Users users) {
 		return modelMapper.map(users, UsersDTO.Response.class);
 	}
 
-	public List<Users> findAll() {
-		return userJpaRepository.findAll();
-	}
-
-	public UsersDTO.Response findUser(final Integer id){
+	public UsersDTO.Response findUserDto(final Integer id){
 		return toResponse(userJpaRepository.findById(id).get());
 	}
 
-	public UsersDTO.Response insertUser(UsersDTO.Create dto) throws Exception{
+	public UsersDTO.Response insertUserDto(UsersDTO.Create dto) throws Exception{
 		/*
 		// 중복체크 Exception 패키지에 추가 후 수정필요함
 		Optional<Users> optionalUsers = userJpaRepository.findByName(dto.getName());
@@ -60,9 +73,36 @@ public class UserService {
 		return toResponse(userJpaRepository.save(newUser));
 	}
 
-//	public void insertUser(Users user) {
-//		userJpaRepository.save(user);
-//	}
+	public UsersDTO.Response updateUserDto(
+			final Integer id,
+			UsersDTO.Update dto
+	) throws Exception {
+		UserRole userRole = new UserRole();
+		userRole.setRolename(dto.getRolename());
+
+		Users user = userJpaRepository.findById(id)
+				.orElseThrow(() -> new AccountNotFoundException(id.toString()));
+		user.setName(dto.getName());
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		user.setUserRoles(new ArrayList<>(Arrays.asList(userRole)));
+
+		return toResponse(userJpaRepository.save(user));
+
+		// name, password, role 수정
+		// modelMapper.map(dto, user);
+	}
+
+
+	//////////////////////////////////// prev: DTO && next: Java Object Model //////////////////////////////////////////
+
+
+	public List<Users> findAll() {
+		return userJpaRepository.findAll();
+	}
+
+	public void insertUser(Users user) {
+		userJpaRepository.save(user);
+	}
 
 	public void insertClientDetails(OauthClientDetails oauthClientDetails) {
 		clientJpaRepository.save(oauthClientDetails);
@@ -75,7 +115,7 @@ public class UserService {
 		user.setName(name);
 		user.setAddress(address);
 		user.setPhonenumber(phonenumber);
-		user.setPassword(password);
+		user.setPassword(passwordEncoder.encode(password));
 		userRole.setRolename(role);
 		user.setUserRoles(new LinkedList<UserRole>(Arrays.asList(userRole)));
 		
