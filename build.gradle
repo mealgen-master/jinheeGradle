@@ -85,6 +85,7 @@ dependencies {
 
 	// DTO
 	compile group: 'org.modelmapper', name: 'modelmapper', version: '0.7.5'
+    implementation 'junit:junit:4.12'
 
 }
 

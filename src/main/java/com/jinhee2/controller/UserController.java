@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,12 +20,14 @@ import com.jinhee2.model.UserRole;
 import com.jinhee2.model.UserRole.Role;
 import com.jinhee2.model.Users;
 import com.jinhee2.service.UserService;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path="/api/user")
+@RequestMapping(path = UserController.BASE_PATH, produces = MediaTypes.HAL_JSON_VALUE)
 public class UserController {
+	static final String BASE_PATH = "/api/user";
 	
 	@Autowired
 	private UserService userService;
@@ -35,21 +39,37 @@ public class UserController {
 	UserResourceAssembler userResourceAssembler;
 
 	@GetMapping("/selectUserDTO/{id}")
-	// status 자리에
-	// EntityModel을 통해 DTO + link 객체를 대체
 	ResponseEntity<EntityModel<UsersDTO.Response>> selectUserDTO(@ApiParam(required = true , example = "1") @PathVariable final  Integer id) {
 		UsersDTO.Response userDtoResponse = userService.findUserDto(id);
 
-		// hateoas
 		EntityModel<UsersDTO.Response> resource = userResourceAssembler.toModel(userDtoResponse);
 
-		return ResponseEntity.ok(resource);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.buildAndExpand(userDtoResponse)
+				.toUri();
+
+		return ResponseEntity
+				.created(uri)
+				.body(resource);
+
+//		return ResponseEntity.ok(resource);
 	}
 
 	@PostMapping("/insertUserDTO")
-	ResponseEntity<UsersDTO.Response> insertUserDTO(@RequestBody @Valid UsersDTO.Create dto) throws Exception {
+	ResponseEntity<EntityModel<UsersDTO.Response>> insertUserDTO(@RequestBody @Valid UsersDTO.Create dto) throws Exception {
 		UsersDTO.Response userDtoResponse = userService.insertUserDto(dto);
-		return ResponseEntity.ok(userDtoResponse);
+
+		EntityModel<UsersDTO.Response> resource = userResourceAssembler.toModel(userDtoResponse);
+
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}").build()
+				.expand(userDtoResponse.getId())
+//				.buildAndExpand(userDtoResponse.getId())
+				.toUri();
+
+		return ResponseEntity
+				.created(uri)
+				.body(resource);
 	}
 
 	@PutMapping("/updateUserDTO/{id}")
@@ -71,7 +91,7 @@ public class UserController {
 
 //	@Secured("ADMIN")
 	@GetMapping("/selectUser")
-	private List<Users> selectUsers() {
+	public List<Users> selectUsers() {
 		return userService.findAll();
 	}
 
