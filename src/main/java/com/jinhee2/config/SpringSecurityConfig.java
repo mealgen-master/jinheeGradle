@@ -17,7 +17,7 @@ import com.jinhee2.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //	@Autowired
 //	private PasswordEncoder passwordEncoder;
@@ -58,7 +58,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //		        .httpBasic();
 		
 		// httpBasic으로 통신하며, 요청이 들어오는 요청에 대한 설정
-		http.authorizeRequests()
+		http.csrf().disable().authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/").permitAll();
 
 //			.antMatchers("/oauth/**", "/oauth/token", "/oauth2/callback**").permitAll()
@@ -67,6 +67,5 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //			.anyRequest().permitAll()
 //	        .and()
 //	        .httpBasic();
-
 	}
 }

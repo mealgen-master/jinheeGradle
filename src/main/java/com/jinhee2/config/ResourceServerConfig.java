@@ -30,7 +30,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 		"/configuration/ui",
 		"/configuration/security",
 		"/swagger-ui.html",
-		"/webjars/**"
+		"/webjars/**",
+
+		// Secured
+//		"/api/user/api/deleteUserDTO/**"
+//		"/api/user/api/selectUserDTO/**"
+//		"/api/user/selectUser"
 	};
 
 	@Autowired
@@ -57,7 +62,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	
 //	@Value("classpath:jinhee.jks")
 //	Resource resourceFile;
-//
+
 //	@Bean
 //	public JwtAccessTokenConverter accessTokenConverter() {
 //		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -76,10 +81,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		// 모든 인증요청 중에
-		http.authorizeRequests()
+		http
+			.authorizeRequests()
 			.antMatchers(AUTH_WHITELIST).permitAll()
-			.antMatchers("/selectUser").access("#oauth2.hasScope('read')")
-			.antMatchers("/updateUser**").access("#oauth2.hasScope('write')")
+			.antMatchers("/api/user/selectUser").access("#oauth2.hasScope('read')")
+			.antMatchers("/api/user/updateUser**").access("#oauth2.hasScope('write')")
 			.anyRequest().authenticated();
 	}
 }

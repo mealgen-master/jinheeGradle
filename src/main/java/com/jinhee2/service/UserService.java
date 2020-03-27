@@ -92,6 +92,12 @@ public class UserService {
 		// modelMapper.map(dto, user);
 	}
 
+	public void deleteUserDto(
+		final Integer id
+	) {
+		userJpaRepository.deleteById(id);
+	}
+
 
 	//////////////////////////////////// prev: DTO && next: Java Object Model //////////////////////////////////////////
 

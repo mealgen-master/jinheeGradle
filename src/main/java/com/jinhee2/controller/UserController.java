@@ -1,12 +1,16 @@
 package com.jinhee2.controller;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
 import com.jinhee2.dto.UsersDTO;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,20 +31,29 @@ public class UserController {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
-	@GetMapping("/api/selectUserDTO/{id}")
-	private ResponseEntity<UsersDTO.Response> selectUserDTO(@ApiParam(required = true , example = "1") @PathVariable final  Integer id) {
+	@Autowired
+	UserResourceAssembler userResourceAssembler;
+
+	@GetMapping("/selectUserDTO/{id}")
+	// status 자리에
+	// EntityModel을 통해 DTO + link 객체를 대체
+	ResponseEntity<EntityModel<UsersDTO.Response>> selectUserDTO(@ApiParam(required = true , example = "1") @PathVariable final  Integer id) {
 		UsersDTO.Response userDtoResponse = userService.findUserDto(id);
-		return ResponseEntity.ok(userDtoResponse);
+
+		// hateoas
+		EntityModel<UsersDTO.Response> resource = userResourceAssembler.toModel(userDtoResponse);
+
+		return ResponseEntity.ok(resource);
 	}
 
-	@PostMapping("/api/insertUserDTO")
-	private ResponseEntity<UsersDTO.Response> insertUserDTO(@RequestBody @Valid UsersDTO.Create dto) throws Exception {
+	@PostMapping("/insertUserDTO")
+	ResponseEntity<UsersDTO.Response> insertUserDTO(@RequestBody @Valid UsersDTO.Create dto) throws Exception {
 		UsersDTO.Response userDtoResponse = userService.insertUserDto(dto);
 		return ResponseEntity.ok(userDtoResponse);
 	}
 
-	@PutMapping("/api/updateUserDTO/{id}")
-	private ResponseEntity<UsersDTO.Response> updateUserDTO(
+	@PutMapping("/updateUserDTO/{id}")
+	ResponseEntity<UsersDTO.Response> updateUserDTO(
 			@ApiParam(required = true, example = "1") @PathVariable final Integer id,
 			@RequestBody UsersDTO.Update dto
 	) throws Exception {
@@ -48,7 +61,15 @@ public class UserController {
 		return ResponseEntity.ok(userDtoResponse);
 	}
 
+	@DeleteMapping("/deleteUserDTO/{id}")
+	ResponseEntity<?> deleteUserDTO(
+			@ApiParam(required = true, example = "1") @PathVariable final Integer id
+	) {
+		userService.deleteUserDto(id);
+		return ResponseEntity.noContent().build();
+	}
 
+//	@Secured("ADMIN")
 	@GetMapping("/selectUser")
 	private List<Users> selectUsers() {
 		return userService.findAll();
@@ -89,7 +110,7 @@ public class UserController {
 		return name + " 수정완료";
 	}
 	
-	@GetMapping("deleteUser")
+	@GetMapping("/deleteUser")
 	private String deleteUser(
 		@RequestParam(name="id") Integer id
 	) {

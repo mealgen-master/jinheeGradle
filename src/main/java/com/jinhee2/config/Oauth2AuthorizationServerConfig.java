@@ -70,8 +70,8 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
 	@Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints
-				.tokenStore(new JdbcTokenStore(dataSource))
-//        		.accessTokenConverter(jwtAccessTokenConverter())
+//				.tokenStore(new JdbcTokenStore(dataSource))
+        		.accessTokenConverter(jwtAccessTokenConverter())
 	        	.authenticationManager(authenticationManager)
     			.userDetailsService(userDetailsServiceImpl);
     }
