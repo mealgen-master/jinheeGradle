@@ -2,6 +2,7 @@ package com.jinhee2.controller;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import com.jinhee2.dto.UsersDTO;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -62,9 +64,7 @@ public class UserController {
 		EntityModel<UsersDTO.Response> resource = userResourceAssembler.toModel(userDtoResponse);
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}").build()
-				.expand(userDtoResponse.getId())
-//				.buildAndExpand(userDtoResponse.getId())
+				.build()
 				.toUri();
 
 		return ResponseEntity
@@ -73,12 +73,24 @@ public class UserController {
 	}
 
 	@PutMapping("/updateUserDTO/{id}")
-	ResponseEntity<UsersDTO.Response> updateUserDTO(
+	ResponseEntity<EntityModel<UsersDTO.Response>> updateUserDTO(
 			@ApiParam(required = true, example = "1") @PathVariable final Integer id,
 			@RequestBody UsersDTO.Update dto
 	) throws Exception {
 		UsersDTO.Response userDtoResponse = userService.updateUserDto(id, dto);
-		return ResponseEntity.ok(userDtoResponse);
+
+		EntityModel<UsersDTO.Response> resource = userResourceAssembler.toModel(userDtoResponse);
+
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+				.build()
+				.toUri();
+
+//		String teststring = "this is header";
+
+		return ResponseEntity
+				.created(uri)
+//				.header(teststring,teststring)
+				.body(resource);
 	}
 
 	@DeleteMapping("/deleteUserDTO/{id}")
