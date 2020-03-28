@@ -98,7 +98,11 @@ public class UserController {
 			@ApiParam(required = true, example = "1") @PathVariable final Integer id
 	) {
 		userService.deleteUserDto(id);
-		return ResponseEntity.noContent().build();
+
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().build().toUri();
+
+		return ResponseEntity
+				.noContent().location(uri).build();
 	}
 
 //	@Secured("ADMIN")
