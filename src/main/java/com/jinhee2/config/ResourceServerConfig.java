@@ -34,7 +34,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 		// Secured
 //		"/api/user/api/deleteUserDTO/**"
-//		"/api/user/api/selectUserDTO/**"
+//		"/api/selectUserDTO/**",
+//		"/api/**"
 //		"/api/user/selectUser"
 	};
 

@@ -1,30 +1,23 @@
 package com.jinhee2.controller;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import com.jinhee2.dto.UsersDTO;
-import io.swagger.annotations.ApiParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-
 import com.jinhee2.model.UserRole;
 import com.jinhee2.model.UserRole.Role;
 import com.jinhee2.model.Users;
 import com.jinhee2.service.UserService;
+import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = UserController.BASE_PATH, produces = MediaTypes.HAL_JSON_VALUE)
@@ -60,7 +53,6 @@ public class UserController {
 	@PostMapping("/insertUserDTO")
 	ResponseEntity<EntityModel<UsersDTO.Response>> insertUserDTO(@RequestBody @Valid UsersDTO.Create dto) throws Exception {
 		UsersDTO.Response userDtoResponse = userService.insertUserDto(dto);
-
 		EntityModel<UsersDTO.Response> resource = userResourceAssembler.toModel(userDtoResponse);
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -111,13 +103,13 @@ public class UserController {
 		return userService.findAll();
 	}
 
-	@GetMapping("/insertUser")
+	@PostMapping("/insertUser")
 	private String insertUser(
-			@RequestParam(name="name") String name,
-			@RequestParam(name="phonenumber") String phonenumber,
-			@RequestParam(name="address") String address,
-			@RequestParam(name="password") String password,
-			@RequestParam(name="role") Role role
+	 	@RequestParam(name="name") String name,
+		@RequestParam(name="phonenumber") String phonenumber,
+		@RequestParam(name="address") String address,
+		@RequestParam(name="password") String password,
+		@RequestParam(name="role") Role role
 	) {
 		Users user = new Users();
 		UserRole userRoles = new UserRole();

@@ -24,7 +24,7 @@ public class UsersDTO {
         @NotEmpty
         private String name;
 
-        @NotEmpty
+//        @NotEmpty
         private String address;
 
         @NotEmpty
