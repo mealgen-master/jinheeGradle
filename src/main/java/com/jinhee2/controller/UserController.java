@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,6 +34,7 @@ public class UserController {
 	@Autowired
 	UserResourceAssembler userResourceAssembler;
 
+	@Secured("ROLE_ADMIN")
 	@GetMapping("/selectUserDTO/{id}")
 	ResponseEntity<EntityModel<UsersDTO.Response>> selectUserDTO(@ApiParam(required = true , example = "1") @PathVariable final  Integer id) {
 		UsersDTO.Response userDtoResponse = userService.findUserDto(id);
@@ -97,7 +99,6 @@ public class UserController {
 				.noContent().location(uri).build();
 	}
 
-//	@Secured("ADMIN")
 	@GetMapping("/selectUser")
 	public List<Users> selectUsers() {
 		return userService.findAll();

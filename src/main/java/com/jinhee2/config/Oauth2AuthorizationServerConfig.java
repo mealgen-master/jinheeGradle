@@ -30,16 +30,15 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
 	@Autowired
 	private DataSource dataSource;
 
-//	authenticationManager에 의존하여 manager를 가져온다.
 	@Autowired
 	public AuthenticationManager authenticationManager;
-	
+
 	@Autowired
 	UserDetailsServiceImpl userDetailsServiceImpl;
 
 	@Value("${security.oauth2.jwt.signkey}")
 	private String signkey;
-	
+
 //	 signKey 공유방식
 	@Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
@@ -72,8 +71,8 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
         endpoints
 //				.tokenStore(new JdbcTokenStore(dataSource))
         		.accessTokenConverter(jwtAccessTokenConverter())
-	        	.authenticationManager(authenticationManager)
-    			.userDetailsService(userDetailsServiceImpl);
+				.userDetailsService(userDetailsServiceImpl)
+	        	.authenticationManager(authenticationManager);
     }
 
 	// 보호받는 리소스에 대한 접근제어와 접근규칙 설정

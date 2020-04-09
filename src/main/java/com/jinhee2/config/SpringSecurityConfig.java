@@ -30,12 +30,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	CustomAuthenticationProvider customAuthenticationProvider;
 
+	// name을 기준으로 새로운 User를 찾고
+	// 해당 유저에 대해 authoiritie를 포함한 값을 설정하여 인스턴스 생성 & 리턴
 	@Override
 	public UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
 	
-//	 해당 메소드는 Authentication 빌더와 context를 포함한 delegator 객체를 리턴 -> Provider에 인증관련 위임
+	// 해당 메소드는 Authentication 빌더와 context를 포함한 delegator 객체를 리턴 -> Provider에 인증관련 위임
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -45,7 +47,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //		auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder);
-		auth.authenticationProvider(customAuthenticationProvider);
+		auth
+			.authenticationProvider(customAuthenticationProvider)
+			.userDetailsService(userDetailsServiceImpl);
 	}
 	
 	@Override
@@ -58,8 +62,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //		        .httpBasic();
 		
 		// httpBasic으로 통신하며, 요청이 들어오는 요청에 대한 설정
-		http.csrf().disable().authorizeRequests()
-			.antMatchers(HttpMethod.GET, "/").permitAll();
+		http.csrf().disable()
+			.authorizeRequests()
+			.antMatchers("/oauth/**", "/oauth/token", "/oauth2/callback**").permitAll()
+			.anyRequest().authenticated();
 
 //			.antMatchers("/oauth/**", "/oauth/token", "/oauth2/callback**").permitAll()
 //			.antMatchers("/selectUser").hasRole("{\"id\":1,\"rolename\":\"USER\"}")

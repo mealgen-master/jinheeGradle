@@ -1,6 +1,9 @@
 package com.jinhee2.service;
 
+import com.jinhee2.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,11 +13,14 @@ import com.jinhee2.model.UserDetailsImpl;
 import com.jinhee2.model.Users;
 import com.jinhee2.repository.UserJpaRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService{
 	@Autowired
 	private UserJpaRepository userJpaRepository;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Users users = userJpaRepository.findByName(username);
@@ -22,10 +28,9 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		if( users == null ) {
 			throw new UsernameNotFoundException(username);
 		}
-		
-		// 찾은 레코드를 기준으로 User 설정
+
 		UserDetailsImpl userDetailImpl = new UserDetailsImpl(users);
-		
+
 		return userDetailImpl;
 	}
 }

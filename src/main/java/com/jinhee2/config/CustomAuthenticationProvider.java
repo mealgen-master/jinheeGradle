@@ -14,27 +14,28 @@ import com.jinhee2.repository.UserJpaRepository;
 
 import lombok.RequiredArgsConstructor;
 
-// 인증절차구현 supports -> authenticate
+import java.util.Arrays;
+
 @RequiredArgsConstructor // 지정된 속성에 한해서만 생성자를 만듬
-// 커스텀 프로바이더를 사용하여 권한을 부여한다.
+// authentication과 해당 user를 DB에서 조회하여 권한이 일치하는지 조회한다.
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
     private UserJpaRepository userJpaRepository;
-    
-	// 사용자 Princifal(인증여부)를 파라미터로 받아옴
+
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String name = authentication.getName();
         String password = authentication.getCredentials().toString();
  
         Users user = userJpaRepository.findByName(name);
-		
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("password is not valid");
         }
+
         return new UsernamePasswordAuthenticationToken(name, password, user.getAuthorities());
 	}
 

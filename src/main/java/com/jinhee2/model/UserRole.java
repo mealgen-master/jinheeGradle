@@ -11,8 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
@@ -37,5 +36,9 @@ public class UserRole {
 	
 	public UserRole(Role rolename) {
 		this.rolename = rolename;
+	}
+
+	public String enumToString(Role role) {
+		return "ROLE_" + role;
 	}
 }

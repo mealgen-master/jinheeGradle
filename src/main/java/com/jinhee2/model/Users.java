@@ -3,6 +3,7 @@ package com.jinhee2.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -46,14 +47,14 @@ public class Users implements UserDetails {
 	@Column
 	public String phonenumber;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+//	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id")
-	// More than one attribute configured for field 'userRoles'
 	@ElementCollection(fetch = FetchType.EAGER)
 	public List<UserRole> userRoles = new ArrayList<>();
-	
+
+	// UserRole에서 role을 가져와서 List화 한다.
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.userRoles.stream().map( role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toList());
+		return this.userRoles.stream().map(role -> new SimpleGrantedAuthority(role.enumToString(role.getRolename()))).collect(Collectors.toSet());
 	}
 
 	@Override
